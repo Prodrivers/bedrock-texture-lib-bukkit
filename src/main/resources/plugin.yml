@@ -1,0 +1,22 @@
+name: BedrockBridger
+main: fr.prodrivers.bukkit.bedrockbridger.BedrockBridge
+version: ${project.version}
+description: ${project.description}
+depend: [ProdriversCommons]
+softdepend: [Geyser-Spigot]
+api-version: "1.14"
+
+commands:
+  bedrockbridger:
+    description: Main BedrockUtil command
+  bedrockbridger reload:
+    description: Reload BedrockUtil to a fresh state
+    permission: bedrockutil.reload
+
+permissions:
+  bedrockbridger.help:
+    description: Allows a user to see the commands help
+    default: op
+  bedrockbridger.reload:
+    description: Allows a user to use the reload command
+    default: op

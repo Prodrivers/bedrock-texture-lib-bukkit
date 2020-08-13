@@ -1,0 +1,101 @@
+package fr.prodrivers.bukkit.bedrockbridger.resource;
+
+import fr.prodrivers.bukkit.bedrockbridger.Log;
+import fr.prodrivers.bukkit.bedrockbridger.protocol.MinecraftVersion;
+import fr.prodrivers.bukkit.bedrockbridger.resource.parser.ResourcePackManifestParser;
+import fr.prodrivers.bukkit.bedrockbridger.resource.parser.ResourcePackParser;
+import fr.prodrivers.bukkit.bedrockbridger.resource.parser.blocks.Blocks;
+import fr.prodrivers.bukkit.bedrockbridger.resource.texture.Atlas;
+import org.geysermc.connector.GeyserConnector;
+
+import java.io.File;
+import java.io.IOException;
+
+public class ResourcePack {
+	private ResourcePackParser parser;
+
+	public ResourcePack() {
+		load();
+	}
+
+	private int getProtocolVersion() {
+		return GeyserConnector.getInstance().getEdition().getCodec().getProtocolVersion();
+	}
+
+	private String getVersion() {
+		MinecraftVersion version = MinecraftVersion.fromProtocol(getProtocolVersion());
+		return version != null ? version.getVersionTag() : null;
+	}
+
+	private String getPrimaryVersion() {
+		String versionTag = getVersion();
+		if(versionTag != null) {
+			String[] versionTagNumbers = versionTag.split("\\.");
+			if(versionTagNumbers.length > 2) {
+				versionTagNumbers[2] = "0";
+				return String.join(".", versionTagNumbers);
+			} else if(versionTagNumbers.length == 2) {
+				return String.join(".", versionTagNumbers) + ".0";
+			}
+		}
+		return null;
+	}
+
+	private String getVersionShort() {
+		String versionTag = getVersion();
+		if(versionTag != null) {
+			String[] versionTagNumbers = versionTag.split("\\.");
+			if(versionTagNumbers.length > 2) {
+				return versionTagNumbers[0] + "." + versionTagNumbers[1];
+			}
+			return String.join(".", versionTagNumbers);
+		}
+		return null;
+	}
+
+	private void load() {
+		if(!load(getVersion())) {
+			if(!load(getPrimaryVersion())) {
+				if(!load(getVersionShort())) {
+					Log.severe("Used all version alternatives to get resource pack for protocol " + getProtocolVersion() + ", giving up.");
+				}
+			}
+		}
+	}
+
+	private boolean load(String version) {
+		if(version != null) {
+			Log.info("Loading resource pack for Minecraft Bedrock version " + version);
+			if(!Downloader.checkIsDownloaded(version)) {
+				if(!Downloader.download(version)) {
+					Log.severe("Could not download resource pack for Minecraft Bedrock version " + version);
+					return false;
+				}
+			}
+
+			File resourcePackPath = Downloader.getResourcePackPath(version);
+			try {
+				ResourcePackManifestParser manifestParser = new ResourcePackManifestParser(resourcePackPath);
+				parser = manifestParser.getResourcePackParser();
+				parser.load(resourcePackPath.toPath());
+				parser.cullUselessStoredFiles();
+
+				Log.info("Resource pack loaded.");
+				return true;
+			} catch(IOException e) {
+				Log.severe("Could not parse resource pack at path : " + Downloader.getResourcePackPath(version), e);
+			}
+		} else {
+			Log.severe("Invalid version provided, using protocol " + getProtocolVersion());
+		}
+		return false;
+	}
+
+	public Atlas getAtlas() {
+		return parser != null ? parser.getAtlas() : null;
+	}
+
+	public Blocks getBlocks() {
+		return parser != null ? parser.getBlocks() : null;
+	}
+}
