@@ -1,12 +1,11 @@
 package fr.prodrivers.bukkit.bedrockbridger.resource;
 
 import fr.prodrivers.bukkit.bedrockbridger.Log;
-import fr.prodrivers.bukkit.bedrockbridger.protocol.MinecraftVersion;
 import fr.prodrivers.bukkit.bedrockbridger.resource.parser.ResourcePackManifestParser;
 import fr.prodrivers.bukkit.bedrockbridger.resource.parser.ResourcePackParser;
 import fr.prodrivers.bukkit.bedrockbridger.resource.parser.blocks.Blocks;
 import fr.prodrivers.bukkit.bedrockbridger.resource.texture.Atlas;
-import org.geysermc.connector.GeyserConnector;
+import org.geysermc.connector.network.BedrockProtocol;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,13 +17,8 @@ public class ResourcePack {
 		load();
 	}
 
-	private int getProtocolVersion() {
-		return GeyserConnector.getInstance().getEdition().getCodec().getProtocolVersion();
-	}
-
 	private String getVersion() {
-		MinecraftVersion version = MinecraftVersion.fromProtocol(getProtocolVersion());
-		return version != null ? version.getVersionTag() : null;
+		return BedrockProtocol.DEFAULT_BEDROCK_CODEC.getMinecraftVersion();
 	}
 
 	private String getPrimaryVersion() {
@@ -57,7 +51,7 @@ public class ResourcePack {
 		if(!load(getVersion())) {
 			if(!load(getPrimaryVersion())) {
 				if(!load(getVersionShort())) {
-					Log.severe("Used all version alternatives to get resource pack for protocol " + getProtocolVersion() + ", giving up.");
+					Log.severe("Used all version alternatives to get resource pack for version " + getVersion() + ", giving up.");
 				}
 			}
 		}
@@ -86,7 +80,7 @@ public class ResourcePack {
 				Log.severe("Could not parse resource pack at path : " + Downloader.getResourcePackPath(version), e);
 			}
 		} else {
-			Log.severe("Invalid version provided, using protocol " + getProtocolVersion());
+			Log.severe("Invalid version provided for resource pack loading, reported version by proxy is " + getVersion());
 		}
 		return false;
 	}

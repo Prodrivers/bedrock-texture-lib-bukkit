@@ -3,7 +3,6 @@ package fr.prodrivers.bukkit.bedrockbridger.resource;
 import fr.prodrivers.bukkit.bedrockbridger.BedrockBridge;
 import fr.prodrivers.bukkit.bedrockbridger.Constants;
 import fr.prodrivers.bukkit.bedrockbridger.Log;
-import fr.prodrivers.bukkit.bedrockbridger.protocol.MinecraftVersion;
 
 import java.io.BufferedInputStream;
 import java.io.File;
