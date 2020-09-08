@@ -4,10 +4,7 @@ import fr.prodrivers.bukkit.bedrockbridger.BedrockBridge;
 import fr.prodrivers.bukkit.bedrockbridger.Constants;
 import fr.prodrivers.bukkit.bedrockbridger.Log;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -78,7 +75,11 @@ public class Downloader {
 				throw new IOException("Could not get ZIP input stream for URL: " + downloadUrl, e);
 			}
 		} catch(IOException e) {
-			Log.severe("Could not get buffered input stream for URL: " + downloadUrl, e);
+			if(e instanceof FileNotFoundException) {
+				Log.warning("File not found at URL: " + downloadUrl);
+			} else {
+				Log.severe("Could not get buffered input stream for URL: " + downloadUrl, e);
+			}
 			try {
 				Files.walk(destination.toPath())
 						.map(Path::toFile)
