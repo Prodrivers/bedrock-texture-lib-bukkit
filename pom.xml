@@ -80,7 +80,7 @@
 		<dependency>
 			<groupId>com.github.bundabrg.Geyser</groupId>
 			<artifactId>connector</artifactId>
-			<version>1.16-b26</version>
+			<version>feature~plugins-e1fbb78b67-1</version>
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
