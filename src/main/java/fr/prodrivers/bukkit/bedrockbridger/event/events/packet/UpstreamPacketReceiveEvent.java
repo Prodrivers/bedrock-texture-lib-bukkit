@@ -1,19 +1,13 @@
 package fr.prodrivers.bukkit.bedrockbridger.event.events.packet;
 
 import com.nukkitx.protocol.bedrock.BedrockPacket;
-import lombok.AllArgsConstructor;
+import fr.prodrivers.bukkit.bedrockbridger.session.BedrockSession;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
-import org.geysermc.connector.GeyserConnector;
-import org.geysermc.connector.event.Cancellable;
-import org.geysermc.connector.event.GeyserEvent;
-import org.geysermc.connector.event.Session;
-import org.geysermc.connector.network.session.GeyserSession;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
+import org.bukkit.event.Cancellable;
+import org.bukkit.event.Event;
+import org.bukkit.event.HandlerList;
 
 /**
  * Triggered each time a packet is received from the Downstream server.
@@ -21,12 +15,15 @@ import java.util.Map;
  * If cancelled then regular processes of the packet will not proceed
  */
 @Data
-@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @SuppressWarnings("JavaDoc")
-public class UpstreamPacketReceiveEvent<T extends BedrockPacket> extends GeyserEvent implements Cancellable, Session {
+public class UpstreamPacketReceiveEvent<T extends BedrockPacket> extends Event implements Cancellable {
+	private static final HandlerList handlers = new HandlerList();
+
+	private boolean cancelled;
+
 	@NonNull
-	private final GeyserSession session;
+	private final BedrockSession session;
 
 	/**
 	 * Upstream packet
@@ -37,22 +34,18 @@ public class UpstreamPacketReceiveEvent<T extends BedrockPacket> extends GeyserE
 	@NonNull
 	private T packet;
 
-	/**
-	 * Upstream packet
-	 *
-	 * @param packet set the upstream packet
-	 * @return get the current upstream packet
-	 */
-	@NonNull
-	private org.geysermc.connector.event.events.packet.UpstreamPacketReceiveEvent<T> realEvent;
-
-	@Override
-	public boolean isCancelled() {
-		return realEvent.isCancelled();
+	public UpstreamPacketReceiveEvent(BedrockSession session, T packet) {
+		super(true);
+		this.session = session;
+		this.packet = packet;
 	}
 
 	@Override
-	public void setCancelled(boolean cancel) {
-		realEvent.setCancelled(true);
+	public HandlerList getHandlers() {
+		return handlers;
+	}
+
+	public static HandlerList getHandlerList() {
+		return handlers;
 	}
 }

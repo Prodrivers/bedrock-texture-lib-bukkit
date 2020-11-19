@@ -1,50 +1,45 @@
 package fr.prodrivers.bukkit.bedrockbridger.event;
 
+import com.nukkitx.protocol.bedrock.BedrockPacket;
+import fr.prodrivers.bukkit.bedrockbridger.BedrockBridge;
 import fr.prodrivers.bukkit.bedrockbridger.Log;
-import fr.prodrivers.bukkit.bedrockbridger.event.annotations.GeyserEventHandler;
 import fr.prodrivers.bukkit.bedrockbridger.event.events.packet.UpstreamPacketReceiveEvent;
-import fr.prodrivers.bukkit.bedrockbridger.event.handlers.MethodEventHandler;
+import fr.prodrivers.bukkit.bedrockbridger.session.BedrockSession;
 import org.geysermc.connector.GeyserConnector;
 import org.geysermc.connector.event.GeyserEvent;
 import org.geysermc.connector.event.handlers.EventHandler;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class BedrockEventManager {
-	private final Map<Object, ArrayList<Object>> classEventHandlers = new HashMap<>();
+	private final Map<Class<? extends BedrockPacket>, EventHandler<? extends GeyserEvent>> handlers = new HashMap<>();
 
 	/**
-	 * Register all Events contained in an instantiated class. The methods must be annotated by @Event
+	 * Make the plugin listen to upstream receive events for a specific packet.
+	 *
+	 * @param packetClass Class of packet which events we should listen to
+	 * @return {@code true} if listener was successfully initialized
 	 */
-	public boolean registerEvents(Object listener) {
+	public boolean listenUpstreamReceive(Class<? extends BedrockPacket> packetClass) {
+		if(handlers.containsKey(packetClass)) {
+			return true;
+		}
+
 		try {
 			Class.forName("org.geysermc.connector.GeyserConnector");
-			List<org.geysermc.connector.event.handlers.EventHandler<?>> handlers = new ArrayList<>();
-			for(Method method : listener.getClass().getMethods()) {
-				// Check that the method is annotated with @Event
-				if(method.getAnnotation(GeyserEventHandler.class) == null) {
-					continue;
-				}
 
-				// Make sure it only has a single Event parameter
-				if(method.getParameterCount() != 1 || !GeyserEvent.class.isAssignableFrom(method.getParameters()[0].getType())) {
-					Log.severe("Cannot register EventHandler as its only parameter must be an Event: " + listener.getClass().getSimpleName() + "#" + method.getName());
-					continue;
-				}
+			Class<? extends GeyserEvent> upstreamClass = upstreamReceiveEventClassOf(packetClass);
 
-				EventHandler<?> handler = new MethodEventHandler<>(GeyserConnector.getInstance().getEventManager(), listener, method);
-				GeyserConnector.getInstance().getEventManager().register(handler);
-				handlers.add(handler);
-			}
+			EventHandler<? extends GeyserEvent> handler = GeyserConnector.getInstance().getEventManager()
+					.on(upstreamClass, this::onUpstreamReceiveEvent)
+					.priority(30)
+					.ignoreCancelled(false);
 
-			if(!classEventHandlers.containsKey(listener.getClass())) {
-				classEventHandlers.put(listener.getClass(), new ArrayList<>());
-			}
-			classEventHandlers.get(listener.getClass()).addAll(handlers);
+			Log.info("Registered listener " + upstreamClass + " for packet " + packetClass.getSimpleName());
+
+			handlers.put(packetClass, handler);
+
 			return true;
 		} catch(ClassNotFoundException e) {
 			Log.warning("No local Geyser connector detected.");
@@ -53,20 +48,21 @@ public class BedrockEventManager {
 	}
 
 	/**
-	 * Unregister all events in class
+	 * Make the plugin stop listening to upstream receive events for a specific packet.
+	 *
+	 * @param packetClass Class of packet which events we should listen to
+	 * @return {@code true} if listener was successfully initialized
 	 */
-	public boolean unregisterEvents(Object listener) {
+	public boolean unlistenUpstreamReceive(Class<? extends BedrockPacket> packetClass) {
+		if(!handlers.containsKey(packetClass)) {
+			return false;
+		}
+
 		try {
 			Class.forName("org.geysermc.connector.GeyserConnector");
-			if(!classEventHandlers.containsKey(listener)) {
-				return false;
-			}
 
-			for(Object handler : classEventHandlers.get(listener)) {
-				GeyserConnector.getInstance().getEventManager().unregister((EventHandler<?>) handler);
-			}
+			GeyserConnector.getInstance().getEventManager().unregister(handlers.get(packetClass));
 
-			classEventHandlers.remove(listener);
 			return true;
 		} catch(ClassNotFoundException e) {
 			Log.warning("No local Geyser connector detected.");
@@ -74,24 +70,24 @@ public class BedrockEventManager {
 		return false;
 	}
 
-	public static Class<?> convertToRealEventClass(Class<?> clss, Class<?> packetClass) {
-		if(clss == UpstreamPacketReceiveEvent.class) {
-			try {
-				return Class.forName(String.format("org.geysermc.connector.event.events.packet.upstream.%sReceive", packetClass.getSimpleName()));
-			} catch (ClassNotFoundException e) {
-				Log.severe("Missing event for packet: " + packetClass);
-				return clss;
-			}
+	private Class<? extends GeyserEvent> upstreamReceiveEventClassOf(Class<? extends BedrockPacket> packetClass) {
+		try {
+			return (Class<? extends GeyserEvent>) Class.forName(String.format("org.geysermc.connector.event.events.packet.upstream.%sReceive", packetClass.getSimpleName()));
+		} catch(ClassNotFoundException e) {
+			Log.severe("Missing event for packet: " + packetClass);
+			return null;
 		}
-		return clss;
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static GeyserEvent convertToRealEventObject(GeyserEvent inObject) {
-		if(org.geysermc.connector.event.events.packet.UpstreamPacketReceiveEvent.class.isAssignableFrom(inObject.getClass())) {
+	private void onUpstreamReceiveEvent(final GeyserEvent inObject) {
+		new Thread(() -> {
 			org.geysermc.connector.event.events.packet.UpstreamPacketReceiveEvent in = (org.geysermc.connector.event.events.packet.UpstreamPacketReceiveEvent) inObject;
-			return new UpstreamPacketReceiveEvent<>(in.getSession(), in.getPacket(), in);
-		}
-		return inObject;
+			UpstreamPacketReceiveEvent<? extends BedrockPacket> bukkitEvent = new UpstreamPacketReceiveEvent<>(BedrockSession.of(in.getSession()), in.getPacket());
+			Log.info("Received packet " + in.getPacket().getClass().getSimpleName() + " from upstream.");
+			bukkitEvent.setCancelled(in.isCancelled());
+			BedrockBridge.getInstance().getServer().getPluginManager().callEvent(bukkitEvent);
+			Log.info("Event was called.");
+		}).start();
 	}
 }
