@@ -203,9 +203,15 @@
 					</relocations>
 					<filters>
 						<filter>
-							<artifact>com.github.cryptomorin:XSeries</artifact>
+							<artifact>com.github.bundabrg.Geyser:common</artifact>
+							<includes>
+								<include>org/geysermc/common/window/**</include>
+							</includes>
+						</filter>
+						<filter>
+							<artifact>*:*</artifact>
 							<excludes>
-								<exclude>META-INF/*</exclude>
+								<exclude>META-INF/**</exclude>
 							</excludes>
 						</filter>
 					</filters>
