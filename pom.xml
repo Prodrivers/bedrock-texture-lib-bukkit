@@ -76,6 +76,32 @@
 			<version>1.0.1</version>
 			<scope>provided</scope>
 		</dependency>
+		<!--Jackson Core-->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>2.11.0</version>
+		</dependency>
+		<!--Jackson Annotations-->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>2.11.0</version>
+		</dependency>
+		<!--Jackson Databind-->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.11.0</version>
+		</dependency>
+		<!--Geyser Common-->
+		<dependency>
+			<groupId>com.github.bundabrg.Geyser</groupId>
+			<artifactId>common</artifactId>
+			<version>feature~plugins-e1fbb78b67-1</version>
+			<scope>provided</scope>
+			<optional>true</optional>
+		</dependency>
 		<!--Geyser Connector-->
 		<dependency>
 			<groupId>com.github.bundabrg.Geyser</groupId>
