@@ -188,6 +188,18 @@
 							<pattern>com.cryptomorin.xseries</pattern>
 							<shadedPattern>${project.groupId}.bedrockbridger.shaded.xseries</shadedPattern>
 						</relocation>
+						<relocation>
+							<pattern>com.fasterxml.jackson</pattern>
+							<shadedPattern>${project.groupId}.bedrockbridger.shaded.jackson</shadedPattern>
+						</relocation>
+						<relocation>
+							<pattern>io.netty</pattern>
+							<shadedPattern>org.geysermc.platform.spigot.shaded.netty</shadedPattern>
+						</relocation>
+						<relocation>
+							<pattern>it.unimi.dsi.fastutil</pattern>
+							<shadedPattern>org.geysermc.platform.spigot.shaded.fastutil</shadedPattern>
+						</relocation>
 					</relocations>
 					<filters>
 						<filter>
