@@ -98,7 +98,7 @@
 		<dependency>
 			<groupId>com.github.bundabrg.Geyser</groupId>
 			<artifactId>common</artifactId>
-			<version>feature~plugins-e1fbb78b67-1</version>
+			<version>feature~plugins-1c39f812c7-1</version>
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
@@ -106,7 +106,7 @@
 		<dependency>
 			<groupId>com.github.bundabrg.Geyser</groupId>
 			<artifactId>connector</artifactId>
-			<version>feature~plugins-e1fbb78b67-1</version>
+			<version>feature~plugins-1c39f812c7-1</version>
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
