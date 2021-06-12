@@ -77,8 +77,14 @@ public class BedrockSession {
 			}
 		}
 
-		Optional<GeyserSession> geyserSession = getGeyserSession(uuid);
-		return geyserSession.map(BedrockSession::fromGeyserSession);
+		try {
+			Class.forName("org.geysermc.connector.network.session.GeyserSession");
+			Optional<GeyserSession> geyserSession = getGeyserSession(uuid);
+			return geyserSession.map(BedrockSession::fromGeyserSession);
+		} catch(ClassNotFoundException e) {
+			Log.warning("No local Geyser connector detected.");
+		}
+		return Optional.empty();
 	}
 
 	public static void dropSessionFromCache(Player player) {

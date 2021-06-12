@@ -12,13 +12,13 @@ public class TextureMapper {
 	}
 
 	public String getTexturePath(Material material) {
+		if(resourcePack.getBlocks() == null) {
+			return null;
+		}
+
 		XMaterial compatMaterial = XMaterial.matchXMaterial(material);
 		if(compatMaterial.getLegacy().length == 0) {
-			if(resourcePack.getBlocks() != null) {
-				return resourcePack.getBlocks().getBestTexture(compatMaterial.name().toLowerCase(), compatMaterial.getData());
-			} else {
-				return null;
-			}
+			return resourcePack.getBlocks().getBestTexture(compatMaterial.name().toLowerCase(), compatMaterial.getData());
 		}
 
 		for(String compatName : compatMaterial.getLegacy()) {

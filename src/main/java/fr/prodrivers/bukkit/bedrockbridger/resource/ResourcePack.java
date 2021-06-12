@@ -18,7 +18,14 @@ public class ResourcePack {
 	}
 
 	private String getVersion() {
-		return BedrockProtocol.DEFAULT_BEDROCK_CODEC.getMinecraftVersion();
+		try {
+			Class.forName("org.geysermc.connector.network.BedrockProtocol");
+			return BedrockProtocol.DEFAULT_BEDROCK_CODEC.getMinecraftVersion();
+		} catch(ClassNotFoundException e) {
+			Log.warning("No local Geyser connector detected.");
+		}
+
+		return null;
 	}
 
 	private String getPrimaryVersion() {
