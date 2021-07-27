@@ -55,8 +55,7 @@ public class BedrockBridge extends JavaPlugin implements org.bukkit.event.Listen
 		Log.init();
 
 		chat = new EChat(pluginDescription.getName());
-		configuration = new EConfiguration(this, chat);
-		configuration.init();
+		configuration = new EConfiguration(this, null, chat);
 
 		getServer().getPluginManager().registerEvents(this, this);
 
