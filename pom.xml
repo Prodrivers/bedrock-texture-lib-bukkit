@@ -5,10 +5,10 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fr.prodrivers.bukkit</groupId>
-	<artifactId>bedrock-bridger</artifactId>
+	<artifactId>bedrock-texture-lib</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
-	<name>Bedrock Bridger</name>
-	<description>Utilities to facilitate communication with Bedrock sessions through a Geyser proxy on a Bukkit server.</description>
+	<name>BedrockTextureLib</name>
+	<description>Library to get Bedrock texture paths for Bukkit/Spigot materials.</description>
 	<url>https://prodrivers.fr/</url>
 
 	<packaging>jar</packaging>
@@ -26,10 +26,6 @@
 			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
 		</repository>
 		<repository>
-			<id>vault-repo</id>
-			<url>http://nexus.hc.to/content/repositories/pub_releases</url>
-		</repository>
-		<repository>
 			<id>prodrivers-repo</id>
 			<url>https://repo.prodrivers.fr/</url>
 		</repository>
@@ -38,12 +34,8 @@
 			<url>https://jitpack.io/</url>
 		</repository>
 		<repository>
-			<id>worldguard-repo</id>
-			<url>https://repo.worldguard.com.au/repository/maven-public/</url>
-		</repository>
-		<repository>
-			<id>nukkitx-repo</id>
-			<url>https://repo.nukkitx.com/maven-releases/</url>
+			<id>opencollab-snapshot-repo</id>
+			<url>https://repo.opencollab.dev/maven-snapshots/</url>
 		</repository>
 	</repositories>
 
@@ -87,21 +79,12 @@
 			<artifactId>jackson-databind</artifactId>
 			<version>2.11.0</version>
 		</dependency>
-		<!--Geyser Common-->
-		<dependency>
-			<groupId>com.github.Hellohi3654.Geyser</groupId>
-			<artifactId>common</artifactId>
-			<version>New-Bleeding_v39</version>
-			<scope>provided</scope>
-			<optional>true</optional>
-		</dependency>
 		<!--Geyser Connector-->
 		<dependency>
-			<groupId>com.github.Hellohi3654.Geyser</groupId>
+			<groupId>org.geysermc</groupId>
 			<artifactId>connector</artifactId>
-			<version>New-Bleeding_v36</version>
+			<version>1.2.1-SNAPSHOT</version>
 			<scope>provided</scope>
-			<optional>true</optional>
 		</dependency>
 		<!--XMaterial-->
 		<dependency>
@@ -179,11 +162,11 @@
 					<relocations>
 						<relocation>
 							<pattern>com.cryptomorin.xseries</pattern>
-							<shadedPattern>${project.groupId}.bedrockbridger.shaded.xseries</shadedPattern>
+							<shadedPattern>${project.groupId}.bedrocktexturelib.shaded.xseries</shadedPattern>
 						</relocation>
 						<relocation>
 							<pattern>com.fasterxml.jackson</pattern>
-							<shadedPattern>${project.groupId}.bedrockbridger.shaded.jackson</shadedPattern>
+							<shadedPattern>${project.groupId}.bedrocktexturelib.shaded.jackson</shadedPattern>
 						</relocation>
 						<relocation>
 							<pattern>io.netty</pattern>
@@ -216,13 +199,13 @@
 	<distributionManagement>
 		<repository>
 			<id>prodrivers-repo</id>
-			<name>bedrock-bridger-releases</name>
-			<url>https://gitlab.com/api/v4/projects/20252849/packages/maven</url>
+			<name>bedrock-texture-lib-releases</name>
+			<url>https://gitlab.com/api/v4/projects/29714261/packages/maven</url>
 		</repository>
 		<snapshotRepository>
 			<id>prodrivers-repo</id>
-			<name>bedrock-bridger-snapshots</name>
-			<url>https://gitlab.com/api/v4/projects/20252849/packages/maven</url>
+			<name>bedrock-texture-lib-snapshots</name>
+			<url>https://gitlab.com/api/v4/projects/29714261/packages/maven</url>
 		</snapshotRepository>
 	</distributionManagement>
 </project>
