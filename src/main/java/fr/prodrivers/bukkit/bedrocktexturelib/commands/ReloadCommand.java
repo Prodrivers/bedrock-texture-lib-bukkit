@@ -6,9 +6,9 @@ import org.bukkit.command.CommandSender;
 
 public class ReloadCommand {
 	public static boolean onCommand(CommandSender sender, String[] args) {
-		if(sender.hasPermission("bedrockbridger.reload")) {
+		if(sender.hasPermission("bedrocktexturelib.reload")) {
 			BedrockTextureLib.getInstance().reload();
-			sender.sendMessage("[BedrockBridger] " + ChatColor.GREEN + "Configuration reloaded.");
+			sender.sendMessage("[BedrockTextureLib] " + ChatColor.GREEN + "Configuration reloaded.");
 			return true;
 		}
 		return false;

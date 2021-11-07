@@ -6,7 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 public class MainCommandExecutor implements CommandExecutor {
-	public static final String LABEL = "bedrockbridger";
+	public static final String LABEL = "bedrocktexturelib";
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -17,8 +17,8 @@ public class MainCommandExecutor implements CommandExecutor {
 						return ReloadCommand.onCommand(sender, args);
 				}
 			} else {
-				if(sender.hasPermission("bedrockbridger.help")) {
-					sender.sendMessage("[BedrockBridger] " + ChatColor.RED + "Unknown command.");
+				if(sender.hasPermission("bedrocktexturelib.help")) {
+					sender.sendMessage("[BedrockTextureLib] " + ChatColor.RED + "Unknown command.");
 					return true;
 				}
 			}

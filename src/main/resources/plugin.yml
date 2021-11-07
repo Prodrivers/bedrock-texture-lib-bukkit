@@ -1,5 +1,5 @@
-name: BedrockBridger
-main: fr.prodrivers.bukkit.bedrockbridger.BedrockBridge
+name: BedrockTextureLib
+main: fr.prodrivers.bukkit.bedrocktexturelib.BedrockTextureLib
 version: ${project.version}
 description: ${project.description}
 depend: [ProdriversCommons]
@@ -7,16 +7,16 @@ softdepend: [Geyser-Spigot]
 api-version: "1.16"
 
 commands:
-  bedrockbridger:
-    description: Main BedrockUtil command
-  bedrockbridger reload:
-    description: Reload BedrockUtil to a fresh state
+  bedrocktexturelib:
+    description: Main BedrockTextureLib command
+  bedrocktexturelib reload:
+    description: Reload BedrockTextureLib to a fresh state
     permission: bedrockutil.reload
 
 permissions:
-  bedrockbridger.help:
+  bedrocktexturelib.help:
     description: Allows a user to see the commands help
     default: op
-  bedrockbridger.reload:
+  bedrocktexturelib.reload:
     description: Allows a user to use the reload command
     default: op
