@@ -1,5 +1,6 @@
 package fr.prodrivers.bukkit.bedrocktexturelib.resource;
 
+import fr.prodrivers.bukkit.bedrocktexturelib.BedrockTextureLib;
 import fr.prodrivers.bukkit.bedrocktexturelib.Log;
 import fr.prodrivers.bukkit.bedrocktexturelib.resource.parser.ResourcePackManifestParser;
 import fr.prodrivers.bukkit.bedrocktexturelib.resource.parser.ResourcePackParser;
@@ -25,7 +26,7 @@ public class ResourcePack {
 			Log.warning("No local Geyser connector detected.");
 		}
 
-		return null;
+		return BedrockTextureLib.getInstance().getConfiguration().getFallbackMinecraftVersion();
 	}
 
 	private String getPrimaryVersion() {
