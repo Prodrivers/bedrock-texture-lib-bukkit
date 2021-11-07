@@ -1,6 +1,6 @@
 package fr.prodrivers.bukkit.bedrocktexturelib.commands;
 
-import fr.prodrivers.bukkit.bedrocktexturelib.BedrockTextureLib;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -18,7 +18,7 @@ public class MainCommandExecutor implements CommandExecutor {
 				}
 			} else {
 				if(sender.hasPermission("bedrockbridger.help")) {
-					BedrockTextureLib.getInstance().getChat().error(sender, "Unknown command.");
+					sender.sendMessage("[BedrockBridger] " + ChatColor.RED + "Unknown command.");
 					return true;
 				}
 			}

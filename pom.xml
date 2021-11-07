@@ -54,13 +54,6 @@
 			<version>1.16.2-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
-		<!--Prodrivers Commons API-->
-		<dependency>
-			<groupId>fr.prodrivers.bukkit</groupId>
-			<artifactId>prodrivers-commons-api</artifactId>
-			<scope>provided</scope>
-			<version>2.0.0-SNAPSHOT</version>
-		</dependency>
 		<!--Jackson Core-->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -178,12 +171,6 @@
 						</relocation>
 					</relocations>
 					<filters>
-						<filter>
-							<artifact>com.github.bundabrg.Geyser:common</artifact>
-							<includes>
-								<include>org/geysermc/common/window/**</include>
-							</includes>
-						</filter>
 						<filter>
 							<artifact>*:*</artifact>
 							<excludes>

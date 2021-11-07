@@ -10,8 +10,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class BedrockTextureLib extends JavaPlugin implements org.bukkit.event.Listener {
 	private static BedrockTextureLib instance;
 
-	private EConfiguration configuration;
-	private EChat chat;
+	private Configuration configuration;
 
 	private ResourcePack resourcePack;
 	private TextureMapper textureMapper;
@@ -20,12 +19,8 @@ public class BedrockTextureLib extends JavaPlugin implements org.bukkit.event.Li
 		return instance;
 	}
 
-	public EConfiguration getConfiguration() {
+	public Configuration getConfiguration() {
 		return configuration;
-	}
-
-	public EChat getChat() {
-		return chat;
 	}
 
 	public ResourcePack getResourcePack() {
@@ -48,8 +43,7 @@ public class BedrockTextureLib extends JavaPlugin implements org.bukkit.event.Li
 
 		Log.init();
 
-		chat = new EChat(pluginDescription.getName());
-		configuration = new EConfiguration(this, null, chat);
+		configuration = new Configuration(this);
 
 		getServer().getPluginManager().registerEvents(this, this);
 
@@ -63,9 +57,6 @@ public class BedrockTextureLib extends JavaPlugin implements org.bukkit.event.Li
 	@Override
 	public void onDisable() {
 		PluginDescriptionFile pluginDescription = this.getDescription();
-
-		configuration.save();
-		Log.info(" Saved configuration.");
 
 		Log.info(pluginDescription.getName() + " has been disabled!");
 	}

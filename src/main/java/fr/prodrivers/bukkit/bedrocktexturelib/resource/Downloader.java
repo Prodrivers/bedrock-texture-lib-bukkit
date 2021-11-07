@@ -26,7 +26,7 @@ public class Downloader {
 	}
 
 	private static String getDownloadUrl(String version) {
-		return BedrockTextureLib.getInstance().getConfiguration().resourcePack_downloadUrl.replaceAll("%VERSIONTAG%", version);
+		return BedrockTextureLib.getInstance().getConfiguration().getResourcePackUrl().replaceAll("%VERSIONTAG%", version);
 	}
 
 	public static boolean download(String version) {
