@@ -16,7 +16,13 @@ public class TextureMapper {
 			return null;
 		}
 
-		XMaterial compatMaterial = XMaterial.matchXMaterial(material);
+		XMaterial compatMaterial;
+		try {
+			compatMaterial = XMaterial.matchXMaterial(material);
+		} catch(IllegalArgumentException e) {
+			return resourcePack.getBlocks().getBestTexture(material.name().toLowerCase(), (byte)-1);
+		}
+
 		if(compatMaterial.getLegacy().length == 0) {
 			return resourcePack.getBlocks().getBestTexture(compatMaterial.name().toLowerCase(), compatMaterial.getData());
 		}

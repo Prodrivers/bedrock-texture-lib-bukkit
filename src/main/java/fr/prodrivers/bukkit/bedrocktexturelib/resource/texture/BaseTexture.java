@@ -27,7 +27,7 @@ public class BaseTexture {
 			for(Iterator<JsonNode> it = node.elements(); it.hasNext(); ) {
 				JsonNode child = it.next();
 
-				if(child.isTextual() && index == blockData) {
+				if(child.isTextual() && (index == blockData || blockData == (byte) -1)) {
 					return child.asText();
 				}
 
