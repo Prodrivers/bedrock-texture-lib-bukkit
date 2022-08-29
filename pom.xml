@@ -15,9 +15,17 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
 		<maven.compiler.release>17</maven.compiler.release>
+
+		<spigot.api.version>1.17</spigot.api.version>
+		<spigot.artifact.version>1.17.1-R0.1-SNAPSHOT</spigot.artifact.version>
+
+		<project.plugin.author>Prodrivers</project.plugin.author>
+		<project.plugin.name>BedrockTextureLib</project.plugin.name>
+		<project.plugin.mainClass>fr.prodrivers.bukkit.bedrocktexturelib.BedrockTextureLib</project.plugin.mainClass>
 	</properties>
 
 	<repositories>
@@ -51,7 +59,7 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>1.17.1-R0.1-SNAPSHOT</version>
+			<version>${spigot.artifact.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<!--Jackson Core-->
