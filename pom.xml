@@ -195,12 +195,12 @@
 		<repository>
 			<id>prodrivers-repo</id>
 			<name>bedrock-texture-lib-releases</name>
-			<url>https://gitlab.com/api/v4/projects/29714261/packages/maven</url>
+			<url>https://maven.pkg.github.com/Prodrivers/bedrock-texture-lib-bukkit</url>
 		</repository>
 		<snapshotRepository>
 			<id>prodrivers-repo</id>
 			<name>bedrock-texture-lib-snapshots</name>
-			<url>https://gitlab.com/api/v4/projects/29714261/packages/maven</url>
+			<url>https://maven.pkg.github.com/Prodrivers/bedrock-texture-lib-bukkit</url>
 		</snapshotRepository>
 	</distributionManagement>
 </project>
