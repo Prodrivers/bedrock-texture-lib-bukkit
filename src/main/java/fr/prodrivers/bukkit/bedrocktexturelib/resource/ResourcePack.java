@@ -6,10 +6,14 @@ import fr.prodrivers.bukkit.bedrocktexturelib.resource.parser.ResourcePackManife
 import fr.prodrivers.bukkit.bedrocktexturelib.resource.parser.ResourcePackParser;
 import fr.prodrivers.bukkit.bedrocktexturelib.resource.parser.blocks.Blocks;
 import fr.prodrivers.bukkit.bedrocktexturelib.resource.texture.Atlas;
-import org.geysermc.connector.network.BedrockProtocol;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.geysermc.geyser.api.GeyserApi;
+import org.geysermc.geyser.api.util.MinecraftVersion;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.Objects;
 
 public class ResourcePack {
 	private ResourcePackParser parser;
@@ -18,77 +22,80 @@ public class ResourcePack {
 		load();
 	}
 
-	private String getVersion() {
+	private List<String> getVersions() {
 		try {
-			Class.forName("org.geysermc.connector.network.BedrockProtocol");
-			return BedrockProtocol.DEFAULT_BEDROCK_CODEC.getMinecraftVersion();
+			Class.forName("org.geysermc.geyser.api.GeyserApi");
+			return GeyserApi.api().supportedBedrockVersions().stream().map(MinecraftVersion::versionString).toList();
 		} catch(ClassNotFoundException e) {
 			Log.warning("No local Geyser connector detected.");
 		}
 
-		return BedrockTextureLib.getInstance().getConfiguration().getFallbackMinecraftVersion();
+		return List.of(BedrockTextureLib.getInstance().getConfiguration().getFallbackMinecraftVersion());
 	}
 
-	private String getPrimaryVersion() {
-		String versionTag = getVersion();
-		if(versionTag != null) {
-			String[] versionTagNumbers = versionTag.split("\\.");
-			if(versionTagNumbers.length > 2) {
-				versionTagNumbers[2] = "0";
-				return String.join(".", versionTagNumbers);
-			} else if(versionTagNumbers.length == 2) {
-				return String.join(".", versionTagNumbers) + ".0";
-			}
-		}
-		return null;
+	private List<String> getPrimaryVersions(List<String> versions) {
+		return versions.stream()
+				.map(version -> {
+					String[] versionTagNumbers = version.split("\\.");
+					if(versionTagNumbers.length > 2) {
+						versionTagNumbers[2] = "0";
+						return String.join(".", versionTagNumbers);
+					} else if(versionTagNumbers.length == 2) {
+						return String.join(".", versionTagNumbers) + ".0";
+					}
+					return null;
+				})
+				.filter(Objects::nonNull)
+				.toList();
 	}
 
-	private String getVersionShort() {
-		String versionTag = getVersion();
-		if(versionTag != null) {
-			String[] versionTagNumbers = versionTag.split("\\.");
-			if(versionTagNumbers.length > 2) {
-				return versionTagNumbers[0] + "." + versionTagNumbers[1];
-			}
-			return String.join(".", versionTagNumbers);
-		}
-		return null;
+	private List<String> getShortVersions(List<String> versions) {
+		return versions.stream()
+				.map(version -> {
+					String[] versionTagNumbers = version.split("\\.");
+					if(versionTagNumbers.length > 2) {
+						return versionTagNumbers[0] + "." + versionTagNumbers[1];
+					}
+					return String.join(".", versionTagNumbers);
+				})
+				.toList();
 	}
 
 	private void load() {
-		if(!load(getVersion())) {
-			if(!load(getPrimaryVersion())) {
-				if(!load(getVersionShort())) {
-					Log.severe("Used all version alternatives to get resource pack for version " + getVersion() + ", giving up.");
+		List<String> versions = getVersions();
+		if(!load(versions)) {
+			if(!load(getPrimaryVersions(versions))) {
+				if(!load(getShortVersions(versions))) {
+					Log.severe("Used all version alternatives to get resource pack for version " + getVersions() + ", giving up.");
 				}
 			}
 		}
 	}
 
-	private boolean load(String version) {
-		if(version != null) {
-			Log.info("Loading resource pack for Minecraft Bedrock version " + version);
-			if(!Downloader.checkIsDownloaded(version)) {
-				if(!Downloader.download(version)) {
-					Log.severe("Could not download resource pack for Minecraft Bedrock version " + version);
-					return false;
-				}
-			}
+	private boolean load(List<String> versions) {
+		return versions.stream().anyMatch(this::load);
+	}
 
-			File resourcePackPath = Downloader.getResourcePackPath(version);
-			try {
-				ResourcePackManifestParser manifestParser = new ResourcePackManifestParser(resourcePackPath);
-				parser = manifestParser.getResourcePackParser();
-				parser.load(resourcePackPath.toPath());
-				parser.cullUselessStoredFiles();
-
-				Log.info("Resource pack loaded.");
-				return true;
-			} catch(IOException e) {
-				Log.severe("Could not parse resource pack at path : " + Downloader.getResourcePackPath(version), e);
+	private boolean load(@NonNull String version) {
+		Log.info("Loading resource pack for Minecraft Bedrock version " + version);
+		if(!Downloader.checkIsDownloaded(version)) {
+			if(!Downloader.download(version)) {
+				Log.severe("Could not download resource pack for Minecraft Bedrock version " + version);
+				return false;
 			}
-		} else {
-			Log.severe("Invalid version provided for resource pack loading, reported version by proxy is " + getVersion());
+		}
+
+		File resourcePackPath = Downloader.getResourcePackPath(version);
+		try {
+			ResourcePackManifestParser manifestParser = new ResourcePackManifestParser(resourcePackPath);
+			parser = manifestParser.getResourcePackParser();
+			parser.load(resourcePackPath.toPath());
+			parser.cullUselessStoredFiles();
+
+			Log.info("Resource pack loaded.");
+			return true;
+		} catch(IOException e) {
+			Log.severe("Could not parse resource pack at path : " + Downloader.getResourcePackPath(version), e);
 		}
 		return false;
 	}
