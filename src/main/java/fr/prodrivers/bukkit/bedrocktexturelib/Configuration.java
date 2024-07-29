@@ -13,7 +13,7 @@ public class Configuration {
 
 	public void setup() {
 		this.plugin.getConfig().addDefault("resourcePack.downloadUrl", "https://github.com/ZtechNetwork/MCBVanillaResourcePack/releases/download/v%VERSIONTAG%/VanillaResourcePack.zip");
-		this.plugin.getConfig().addDefault("fallback.minecraftVersion", "1.17.10");
+		this.plugin.getConfig().addDefault("fallback.minecraftVersion", "1.20.30");
 
 		this.plugin.saveDefaultConfig();
 	}
